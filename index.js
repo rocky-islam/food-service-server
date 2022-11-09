@@ -27,12 +27,23 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         const serviceCollection = client.db('foodService').collection('services');
+        // add data to mongo services
+        app.post('/services', async(req, res) =>{
+            const services = req.body
+            console.log(services);
+            const result = await serviceCollection.insertOne(services);
+            res.send(result)
+            
+        })
 
+
+        // get data from mong services
         app.get('/services', async(req, res) =>{
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
+            
         })
     }
     finally{
