@@ -1,6 +1,6 @@
 const express = require('express');
 const cors = require('cors');
-const { MongoClient, ServerApiVersion } = require("mongodb");
+const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 require('dotenv').config();
 
 const app = express();
@@ -27,6 +27,9 @@ const client = new MongoClient(uri, {
 async function run(){
     try{
         const serviceCollection = client.db('foodService').collection('services');
+        const reviewCollection = client.db("foodService").collection('reviews');
+
+
         // add data to mongo services
         app.post('/services', async(req, res) =>{
             const services = req.body
@@ -34,17 +37,34 @@ async function run(){
             const result = await serviceCollection.insertOne(services);
             res.send(result)
             
-        })
+        });
 
 
-        // get data from mong services
+        // get data from mongo services
         app.get('/services', async(req, res) =>{
             const query = {};
             const cursor = serviceCollection.find(query);
             const services = await cursor.toArray();
             res.send(services);
             
+        });
+
+        // get single service data from mongodb
+        app.get('/services/:id', async(req, res) =>{
+            const id = req.params.id;
+            const query = {_id: ObjectId(id)};
+            const service = await serviceCollection.findOne(query);
+            res.send(service);
+        });
+
+
+        // review ApI
+        app.post('/reviews', async(req, res) =>{
+            const review = req.body;
+            const result = await reviewCollection.insertOne(review);
+            res.send(result);
         })
+
     }
     finally{
 
