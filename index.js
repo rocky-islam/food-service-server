@@ -1,6 +1,8 @@
 const express = require('express');
 const cors = require('cors');
 const { MongoClient, ServerApiVersion } = require("mongodb");
+require('dotenv').config();
+
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -8,11 +10,16 @@ const port = process.env.PORT || 5000;
 app.use(cors());
 app.use(express.json());
 
+// console.log(process.env.DB_USER);
+// console.log(process.env.DB_PASSWORD);
+
+
 // connect mongodb
 // username: foodServiceDB
 // password: HnC7LWGWGMi2x7uv
-const uri =
-  "mongodb+srv://<username>:<password>@cluster0.bhp2qs5.mongodb.net/?retryWrites=true&w=majority";
+const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASSWORD}@cluster0.bhp2qs5.mongodb.net/?retryWrites=true&w=majority`;
+console.log(uri);
+
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
