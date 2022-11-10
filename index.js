@@ -43,7 +43,7 @@ async function run(){
         // get data from mongo services
         app.get('/services', async(req, res) =>{
             const query = {};
-            const cursor = serviceCollection.find(query);
+            const cursor = serviceCollection.find(query).sort({ _id: -1 });
             const services = await cursor.toArray();
             res.send(services);
             
@@ -74,7 +74,12 @@ async function run(){
                     email: req.query.email
                 }
             }
-            const cursor = reviewCollection.find(query);
+            else if(req.query.service){
+                query ={
+                    service: req.query.service
+                }
+            }
+            const cursor = reviewCollection.find(query).sort({_id: -1});
             const reviews = await cursor.toArray();
             res.send(reviews);
         });
